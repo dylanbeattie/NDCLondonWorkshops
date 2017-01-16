@@ -17,7 +17,9 @@ namespace DotNetCoreApp01 {
         public void Configure(IApplicationBuilder app) {
             app.UseLogging(new LoggingOptions() { Message = "DylanLog" });
             app.UseStaticFiles();
-            app.UseMvc();
+            app.UseMvc(routes => {
+                routes.MapRoute("default", "{controller=Home}/{action=Index}/{name?}");
+            });
             app.Run(ctx => ctx.Response.WriteAsync("Hello World!"));
         }
     }
