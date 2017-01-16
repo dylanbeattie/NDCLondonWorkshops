@@ -23,14 +23,21 @@ namespace DotNetCoreApp01 {
         }
     }
 
-    public class Startup {
-        public void Configure(IApplicationBuilder app) {
-            app.Use(async (ctx, next) => {
-                Console.WriteLine(ctx.Request.Path);
-                await next();
-            });
-            app.UseStaticFiles();
-            app.Run(ctx => ctx.Response.WriteAsync("Hello World!"));
+    public class LoggingMiddleware {
+        private readonly RequestDelegate next;
+        private readonly LoggingOptions options;
+
+        public LoggingMiddleware(RequestDelegate next, LoggingOptions options) {
+            this.next = next;
+            this.options = options;
+            this.options = options;
+        }
+
+        public async Task Invoke(HttpContext context) {
+            Console.WriteLine(options.Message + ": " + context.Request.Method + " " + context.Request.Path);
+            await next.Invoke(context);
+            Console.WriteLine(options.Message + ": " + context.Response.StatusCode);
+
         }
     }
 }
